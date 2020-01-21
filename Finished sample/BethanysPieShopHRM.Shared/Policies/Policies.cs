@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace BethanysPieShopHRM.Shared
+namespace BethanysPieShopHRM.Shared.Policies
 {
     public static class Policies
     {

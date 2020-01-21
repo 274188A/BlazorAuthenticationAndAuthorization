@@ -38,6 +38,14 @@ namespace BethanysPieShopHRM.Server.Services
 
         public async Task<Employee> GetEmployeeDetails(int employeeId)
         {
+
+            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            if (accessToken != null)
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            }
+
+
             return await JsonSerializer.DeserializeAsync<Employee>
                 (await _httpClient.GetStreamAsync($"api/employee/{employeeId}"), 
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
@@ -45,6 +53,13 @@ namespace BethanysPieShopHRM.Server.Services
 
         public async Task<Employee> AddEmployee(Employee employee)
         {
+
+            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            if (accessToken != null)
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            }
+
             var employeeJson =
                 new StringContent(JsonSerializer.Serialize(employee), Encoding.UTF8, "application/json");
 

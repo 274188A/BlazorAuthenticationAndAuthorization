@@ -1,4 +1,6 @@
 ﻿using BethanysPieShopHRM.Api.Models;
+using BethanysPieShopHRM.Shared.Policies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,6 +20,7 @@ namespace BethanysPieShopHRM.Api.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [Authorize(Policy = Policies.CanManageEmployees)]
         public IActionResult GetCountries()
         {
             return Ok(_countryRepository.GetAllCountries());

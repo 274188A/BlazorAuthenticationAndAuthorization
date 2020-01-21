@@ -1,4 +1,5 @@
-using BethanysPieShopHRM.Api.Models;
+﻿using BethanysPieShopHRM.Api.Models;
+using BethanysPieShopHRM.Shared.Policies;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -26,8 +27,8 @@ namespace BethanysPieShopHRM.Api
             services.AddAuthorization(authorizationOptions =>
             {
                 authorizationOptions.AddPolicy(
-                    BethanysPieShopHRM.Shared.Policies.CanManageEmployees,
-                    BethanysPieShopHRM.Shared.Policies.CanManageEmployeesPolicy());
+                    Policies.CanManageEmployees,
+                    Policies.CanManageEmployeesPolicy());
             });
 
             //services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase(databaseName: "BethanysPieShopHRM"));

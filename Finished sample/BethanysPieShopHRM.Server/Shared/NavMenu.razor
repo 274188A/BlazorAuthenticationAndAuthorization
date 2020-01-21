@@ -1,4 +1,5 @@
-﻿
+﻿@using BethanysPieShopHRM.Shared.Policies
+
 <div class="bg-light" id="sidebar-wrapper">
     <div class="sidebar-logo">
         <img class="img-responsive" id="logo" src="images/bethanylogo.png" />
@@ -20,7 +21,7 @@
                 </NavLink>
                 </Authorized>
         </AuthorizeView>
-                <AuthorizeView Policy="@BethanysPieShopHRM.Shared.Policies.CanManageEmployees">
+                <AuthorizeView Policy="@Policies.CanManageEmployees">
                     <NavLink class="list-group-item list-group-item-action bg-light" href="/employeeoverview">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Employees
                     </NavLink>

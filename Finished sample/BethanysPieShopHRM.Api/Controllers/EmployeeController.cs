@@ -1,5 +1,6 @@
 ﻿using BethanysPieShopHRM.Api.Models;
 using BethanysPieShopHRM.Shared;
+using BethanysPieShopHRM.Shared.Policies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace BethanysPieShopHRM.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = BethanysPieShopHRM.Shared.Policies.CanManageEmployees)]
+        [Authorize(Policy = Policies.CanManageEmployees)]
         public IActionResult GetAllEmployees()
         {
             return Ok(_employeeRepository.GetAllEmployees());

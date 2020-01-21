@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BethanysPieShopHRM.Server.Services;
+using BethanysPieShopHRM.Shared.Policies;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -60,8 +61,8 @@ namespace BethanysPieShopHRM.Server
             services.AddAuthorization(authorizationOptions =>
             {
                 authorizationOptions.AddPolicy(
-                    BethanysPieShopHRM.Shared.Policies.CanManageEmployees,
-                    BethanysPieShopHRM.Shared.Policies.CanManageEmployeesPolicy());
+                    Policies.CanManageEmployees,
+                    Policies.CanManageEmployeesPolicy());
             });
 
 
