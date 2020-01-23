@@ -48,13 +48,13 @@ namespace BethanysPieShopHRM.Server.HttpHandlers
             if (accessToken != null && _httpClient.DefaultRequestHeaders != null 
                                     && _httpClient.DefaultRequestHeaders.Any()
                                     && _httpClient.DefaultRequestHeaders.Authorization != null
-                                    && _httpClient.DefaultRequestHeaders.Authorization.Scheme.Trim().ToLower() == BEARER)
+                                    && _httpClient.DefaultRequestHeaders.Authorization.Scheme==BEARER) 
                 
             {
                 return accessToken;
             }
 
-            _httpClient.DefaultRequestHeaders.Add(AUTHORIZATION, BEARER + accessToken);
+            _httpClient.DefaultRequestHeaders.Add(AUTHORIZATION, $"{BEARER} {accessToken}");
 
             return accessToken;
 
