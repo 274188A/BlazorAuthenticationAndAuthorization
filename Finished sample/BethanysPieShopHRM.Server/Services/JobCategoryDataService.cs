@@ -10,7 +10,6 @@ namespace BethanysPieShopHRM.Server.Services
     public class JobCategoryDataService : IJobCategoryDataService
     {
         private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public JobCategoryDataService(HttpClient httpClient,
             IHttpContextAccessor httpContextAccessor)
