@@ -13,8 +13,7 @@ namespace BethanysPieShopHRM.Server.Services
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CountryDataService(HttpClient httpClient,
-            IHttpContextAccessor httpContextAccessor)
+        public CountryDataService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient ??
                           throw new System.ArgumentNullException(nameof(httpClient));
@@ -25,11 +24,11 @@ namespace BethanysPieShopHRM.Server.Services
 
         public async Task<IEnumerable<Country>> GetAllCountries()
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken != null)
-            {
-                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-            }
+            //var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            //if (accessToken != null)
+            //{
+            //    _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            //}
             return await JsonSerializer.DeserializeAsync<IEnumerable<Country>>
             (await _httpClient.GetStreamAsync($"api/country"), new JsonSerializerOptions()
                 { PropertyNameCaseInsensitive = true });
@@ -39,11 +38,11 @@ namespace BethanysPieShopHRM.Server.Services
 
         public async Task<Country> GetCountryById(int countryId)
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken != null)
-            {
-                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-            }
+            //var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            //if (accessToken != null)
+            //{
+            //    _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            //}
 
             return await JsonSerializer.DeserializeAsync<Country>
                 (await _httpClient.GetStreamAsync($"api/country{countryId}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
+using BethanysPieShopHRM.Server.HttpHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components;
+using Polly;
 
 namespace BethanysPieShopHRM.Server
 {
@@ -28,10 +32,9 @@ namespace BethanysPieShopHRM.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor().AddCircuitOptions(options => 
-            { options.DetailedErrors = true; });
+            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
             services.AddAuthentication(options =>
             {
@@ -66,18 +69,39 @@ namespace BethanysPieShopHRM.Server
             });
 
 
-            services.AddHttpClient<IEmployeeDataService, EmployeeDataService>(client =>
+            // Server Side Blazor doesn't register HttpClient by default
+            if (services.All(x => x.ServiceType != typeof(HttpClient)))
             {
-                client.BaseAddress = new Uri("https://localhost:44340/");
-            });
-            services.AddHttpClient<ICountryDataService, CountryDataService>(client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:44340/");
-            });
-            services.AddHttpClient<IJobCategoryDataService, JobCategoryDataService>(client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:44340/");
-            });
+                // Setup HttpClient for server side in a client side compatible fashion
+                services.AddScoped<HttpClient>(s =>
+                {
+                    // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+                    var uriHelper = s.GetRequiredService<NavigationManager>();
+                    return new HttpClient
+                    {
+                        BaseAddress = new Uri(uriHelper.BaseUri)
+                    };
+                });
+            }
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<BearerTokenHandler>();
+
+            services.AddHttpClient<IEmployeeDataService, EmployeeDataService>()
+                .AddHttpMessageHandler<BearerTokenHandler>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration.GetSection("Apis:EmployeeDataService").Value))
+                .Services.AddScoped<HttpClient>();
+
+            services.AddHttpClient<ICountryDataService, CountryDataService>()
+                .AddHttpMessageHandler<BearerTokenHandler>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration.GetSection("Apis:CountryDataService").Value))
+                .Services.AddScoped<HttpClient>();
+
+            services.AddHttpClient<IJobCategoryDataService, JobCategoryDataService>()
+                .AddHttpMessageHandler<BearerTokenHandler>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration.GetSection("Apis:JobCategoryDataService").Value))
+                .Services.AddScoped<HttpClient>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

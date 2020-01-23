@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BethanysPieShopHRM.Shared;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
 namespace BethanysPieShopHRM.Server.Services
@@ -12,54 +11,28 @@ namespace BethanysPieShopHRM.Server.Services
     public class EmployeeDataService : IEmployeeDataService
     {
         private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EmployeeDataService(HttpClient httpClient,
-            IHttpContextAccessor httpContextAccessor)
+        public EmployeeDataService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
-            _httpClient = httpClient ?? 
-                throw new System.ArgumentNullException(nameof(httpClient));
-            _httpContextAccessor = httpContextAccessor ?? 
-                throw new System.ArgumentNullException(nameof(httpContextAccessor));
+            _httpClient = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient));
         }
-
 
         public async Task<IEnumerable<Employee>> GetAllEmployees()
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken != null)
-            {
-                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-            }
             return await JsonSerializer.DeserializeAsync<IEnumerable<Employee>>
-                (await _httpClient.GetStreamAsync($"api/employee"), new JsonSerializerOptions() 
+                (await _httpClient.GetStreamAsync($"api/employee"), new JsonSerializerOptions()
                 { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<Employee> GetEmployeeDetails(int employeeId)
         {
-
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken != null)
-            {
-                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-            }
-
-
             return await JsonSerializer.DeserializeAsync<Employee>
-                (await _httpClient.GetStreamAsync($"api/employee/{employeeId}"), 
+                (await _httpClient.GetStreamAsync($"api/employee/{employeeId}"),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<Employee> AddEmployee(Employee employee)
         {
-
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken != null)
-            {
-                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-            }
-
             var employeeJson =
                 new StringContent(JsonSerializer.Serialize(employee), Encoding.UTF8, "application/json");
 
